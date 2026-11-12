@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>そま | 自己紹介</title>
+  <meta name="description" content="そま（aokisoma）の自己紹介ページです。">
+  <style>
+    :root {
+      --bg: #f6f7f9;
+      --card: #ffffff;
+      --text: #24292f;
+      --muted: #57606a;
+      --accent: #0969da;
+      --border: #d8dee4;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0d1117;
+        --card: #161b22;
+        --text: #e6edf3;
+        --muted: #9eabb9;
+        --accent: #4493f8;
+        --border: #30363d;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+    main {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 48px 20px 64px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      margin-bottom: 24px;
+    }
+    .avatar {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      display: block;
+      margin-bottom: 16px;
+    }
+    h1 { font-size: 1.8rem; margin: 0 0 4px; }
+    h2 { font-size: 1.2rem; margin: 0 0 12px; }
+    .username { color: var(--muted); margin: 0 0 16px; }
+    p { margin: 0 0 12px; }
+    ul { margin: 0; padding-left: 1.2em; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    footer { color: var(--muted); font-size: 0.9rem; text-align: center; }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="card">
+      <img class="avatar" src="https://github.com/aokisoma.png" alt="そまのアバター">
+      <h1>そま</h1>
+      <p class="username">@aokisoma</p>
+      <!-- ↓ 自己紹介文はここを書き換えてください -->
+      <p>はじめまして、そまです。このページは、私の自己紹介ページです。</p>
+      <p>（ここに、ひとこと自己紹介が入ります。あとから自由に書き換えられます）</p>
+    </section>
+
+    <section class="card">
+      <h2>興味・関心</h2>
+      <!-- ↓ 興味のあることを書き換えてください -->
+      <ul>
+        <li>（興味のあること 1）</li>
+        <li>（興味のあること 2）</li>
+        <li>（興味のあること 3）</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>リンク</h2>
+      <ul>
+        <li><a href="https://github.com/aokisoma">GitHub - @aokisoma</a></li>
+      </ul>
+    </section>
+
+    <footer>
+      <p>&copy; 2026 そま</p>
+    </footer>
+  </main>
+</body>
+</html>
