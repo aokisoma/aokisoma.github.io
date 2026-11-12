@@ -4,94 +4,330 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>そま | 自己紹介</title>
-  <meta name="description" content="そま（aokisoma）の自己紹介ページです。">
+  <meta name="description" content="そま（aokisoma）の自己紹介ページ。歌うこと、BBQ、コンピュータビジョンの勉強について。">
   <style>
     :root {
-      --bg: #f6f7f9;
-      --card: #ffffff;
-      --text: #24292f;
-      --muted: #57606a;
-      --accent: #0969da;
-      --border: #d8dee4;
+      --bg: #f4f5f7;
+      --surface: #ffffff;
+      --text: #1f2328;
+      --muted: #4c5560;
+      --accent: #075fc0;
+      --accent-soft: #eef4fc;
+      --border: #d3d9e0;
+      --radius: 14px;
     }
     @media (prefers-color-scheme: dark) {
       :root {
         --bg: #0d1117;
-        --card: #161b22;
+        --surface: #161b22;
         --text: #e6edf3;
-        --muted: #9eabb9;
-        --accent: #4493f8;
+        --muted: #a8b3bf;
+        --accent: #5ea2f7;
+        --accent-soft: #12283f;
         --border: #30363d;
       }
     }
     * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      * { transition: none !important; }
+    }
     body {
       margin: 0;
-      font-family: -apple-system, "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
       background: var(--bg);
       color: var(--text);
-      line-height: 1.7;
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN",
+        "Hiragino Sans", "Yu Gothic UI", "Yu Gothic", Meiryo, sans-serif;
+      font-size: 17px;
+      line-height: 1.85;
+      letter-spacing: 0.02em;
+      -webkit-text-size-adjust: 100%;
     }
-    main {
-      max-width: 720px;
+    a { color: var(--accent); }
+    a:focus-visible, .skip:focus-visible {
+      outline: 3px solid var(--accent);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+    .skip {
+      position: absolute;
+      left: -9999px;
+      top: 0;
+      background: var(--surface);
+      padding: 12px 16px;
+      z-index: 10;
+    }
+    .skip:focus-visible { left: 8px; top: 8px; }
+
+    header.site-nav {
+      position: sticky;
+      top: 0;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      z-index: 5;
+    }
+    .nav-inner {
+      max-width: 46rem;
       margin: 0 auto;
-      padding: 48px 20px 64px;
+      padding: 0 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 8px;
     }
+    .nav-inner a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 6px 10px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.95rem;
+    }
+    .nav-inner a:hover { color: var(--accent); text-decoration: underline; }
+
+    main {
+      max-width: 46rem;
+      margin: 0 auto;
+      padding: 32px 20px 56px;
+    }
+    section { margin-bottom: 40px; scroll-margin-top: 72px; }
     .card {
-      background: var(--card);
+      background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 32px;
-      margin-bottom: 24px;
+      border-radius: var(--radius);
+      padding: 28px;
     }
+    section.card { margin-bottom: 40px; }
+
+    .hero { text-align: left; }
     .avatar {
-      width: 96px;
-      height: 96px;
+      width: 104px;
+      height: 104px;
       border-radius: 50%;
+      border: 1px solid var(--border);
       display: block;
       margin-bottom: 16px;
     }
-    h1 { font-size: 1.8rem; margin: 0 0 4px; }
-    h2 { font-size: 1.2rem; margin: 0 0 12px; }
-    .username { color: var(--muted); margin: 0 0 16px; }
+    h1 { font-size: 1.9rem; line-height: 1.35; margin: 0 0 2px; }
+    h2 {
+      font-size: 1.3rem;
+      line-height: 1.45;
+      margin: 0 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--accent-soft);
+    }
+    h3 { font-size: 1.08rem; line-height: 1.5; margin: 0 0 8px; }
     p { margin: 0 0 12px; }
-    ul { margin: 0; padding-left: 1.2em; }
-    a { color: var(--accent); text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    footer { color: var(--muted); font-size: 0.9rem; text-align: center; }
+    p:last-child { margin-bottom: 0; }
+    .username { color: var(--muted); margin: 0 0 14px; }
+    .lead { font-size: 1.05rem; }
+
+    .chips {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 16px 0 0;
+      padding: 0;
+    }
+    .chips li {
+      background: var(--accent-soft);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 4px 14px;
+      font-size: 0.92rem;
+      line-height: 1.6;
+    }
+
+    dl.facts {
+      display: grid;
+      grid-template-columns: 8.5em 1fr;
+      row-gap: 10px;
+      column-gap: 16px;
+      margin: 0;
+    }
+    dl.facts dt { font-weight: 700; }
+    dl.facts dd { margin: 0; }
+    @media (max-width: 30rem) {
+      dl.facts { grid-template-columns: 1fr; row-gap: 2px; }
+      dl.facts dd { margin-bottom: 10px; }
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    @media (min-width: 40rem) {
+      .grid { grid-template-columns: 1fr 1fr 1fr; }
+    }
+    .grid .card { padding: 22px; }
+    .grid p { font-size: 0.98rem; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin: 4px 0 16px;
+    }
+    @media (min-width: 40rem) {
+      .stats { grid-template-columns: repeat(3, 1fr); }
+    }
+    .stat {
+      background: var(--accent-soft);
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+    .stat .num { font-size: 1.35rem; font-weight: 700; line-height: 1.4; display: block; }
+    .stat .label { color: var(--muted); font-size: 0.9rem; }
+
+    ul.plain { margin: 0; padding-left: 1.3em; }
+    ul.plain li { margin-bottom: 6px; }
+    ul.plain li:last-child { margin-bottom: 0; }
+    .note { color: var(--muted); font-size: 0.94rem; }
+
+    footer {
+      max-width: 46rem;
+      margin: 0 auto;
+      padding: 0 20px 40px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
-  <main>
-    <section class="card">
-      <img class="avatar" src="https://github.com/aokisoma.png" alt="そまのアバター">
+  <a class="skip" href="#main">本文へ移動</a>
+
+  <header class="site-nav" aria-label="ページ内メニュー">
+    <nav class="nav-inner">
+      <a href="#profile">プロフィール</a>
+      <a href="#interests">関心ごと</a>
+      <a href="#voice">声のこと</a>
+      <a href="#study">勉強中</a>
+      <a href="#about-site">このサイト</a>
+      <a href="#links">リンク</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="card hero" aria-label="自己紹介">
+      <img class="avatar" src="https://github.com/aokisoma.png" alt="そまのGitHubアバター" width="104" height="104">
       <h1>そま</h1>
       <p class="username">@aokisoma</p>
-      <!-- ↓ 自己紹介文はここを書き換えてください -->
-      <p>はじめまして、そまです。このページは、私の自己紹介ページです。</p>
-      <p>（ここに、ひとこと自己紹介が入ります。あとから自由に書き換えられます）</p>
-    </section>
-
-    <section class="card">
-      <h2>興味・関心</h2>
-      <!-- ↓ 興味のあることを書き換えてください -->
-      <ul>
-        <li>（興味のあること 1）</li>
-        <li>（興味のあること 2）</li>
-        <li>（興味のあること 3）</li>
+      <p class="lead">
+        はじめまして、そまと申します。山梨・甲府エリアを中心に、
+        歌うこと、休日のBBQ、そしてコンピュータビジョンの勉強を楽しんでいる学生です。
+        このページでは、公開できる範囲で私のプロフィールや関心ごとをまとめています。
+      </p>
+      <ul class="chips" aria-label="キーワード">
+        <li>歌うこと</li>
+        <li>BBQ</li>
+        <li>コンピュータビジョン</li>
+        <li>山梨・甲府</li>
       </ul>
     </section>
 
-    <section class="card">
+    <section class="card" id="profile">
+      <h2>プロフィール</h2>
+      <dl class="facts">
+        <dt>名前</dt>
+        <dd>そま</dd>
+        <dt>GitHub</dt>
+        <dd><a href="https://github.com/aokisoma">@aokisoma</a></dd>
+        <dt>エリア</dt>
+        <dd>山梨県甲府市周辺</dd>
+        <dt>GitHub登録</dt>
+        <dd>2025年8月</dd>
+        <dt>いまの関心</dt>
+        <dd>自分の声に合った曲の選び方、BBQの場所探し、画像処理の勉強</dd>
+      </dl>
+    </section>
+
+    <section id="interests">
+      <h2>関心ごと</h2>
+      <div class="grid">
+        <article class="card">
+          <h3>歌うこと</h3>
+          <p>
+            歌うことが好きで、自分の声の特徴を知ることに関心があります。
+            実測した音域をもとに、「無理なく歌える曲」を探すのが最近のテーマです。
+          </p>
+        </article>
+        <article class="card">
+          <h3>BBQ</h3>
+          <p>
+            休日の楽しみはBBQです。機材は一式そろえているので、
+            場所だけを借りるスタイルで、山梨県内・甲府近郊のスポットを中心に楽しんでいます。
+          </p>
+        </article>
+        <article class="card">
+          <h3>コンピュータビジョン</h3>
+          <p>
+            学校で画像処理やコンピュータビジョンを勉強中です。
+            カメラの幾何やホモグラフィなど、「画像から空間の情報を読み取る」仕組みが面白いと感じています。
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="card" id="voice">
+      <h2>声のこと</h2>
+      <div class="stats">
+        <div class="stat">
+          <span class="num">A#2 〜 G#5</span>
+          <span class="label">安定して出せる音域（実測）</span>
+        </div>
+        <div class="stat">
+          <span class="num">約3オクターブ</span>
+          <span class="label">34半音</span>
+        </div>
+        <div class="stat">
+          <span class="num">高音は裏声で</span>
+          <span class="label">低音域はやや慎重に</span>
+        </div>
+      </div>
+      <p>
+        自分の録音を測ってみたところ、音域は約3オクターブありました。
+        高い音は裏声を使って比較的無理なく出せる一方、いちばん低い音のあたりは少し苦しくなる、
+        というのが私の声の特徴です。
+      </p>
+      <p>
+        この特徴を手がかりに、曲ごとに「出しやすい／苦しい」とその理由が分かるような、
+        自分の声に合った選曲の仕組みにも興味を持っています。
+      </p>
+    </section>
+
+    <section class="card" id="study">
+      <h2>勉強中</h2>
+      <ul class="plain">
+        <li>コンピュータビジョン／画像処理（ホモグラフィ、カメラ幾何など）</li>
+        <li>学校の学びの記録を、このサイトにも少しずつ残していく予定です</li>
+      </ul>
+    </section>
+
+    <section class="card" id="about-site">
+      <h2>このサイトについて</h2>
+      <p>
+        このサイトは GitHub Pages で公開している、私の自己紹介ページです。
+        まだできたばかりなので、内容はこれから少しずつ充実させていきます。
+        載せる情報は、公開できるものだけに絞っています。
+      </p>
+      <p class="note">最終更新：2026年11月</p>
+    </section>
+
+    <section class="card" id="links">
       <h2>リンク</h2>
-      <ul>
+      <ul class="plain">
         <li><a href="https://github.com/aokisoma">GitHub - @aokisoma</a></li>
+        <li><a href="https://github.com/aokisoma/aokisoma.github.io">このサイトのリポジトリ</a></li>
       </ul>
     </section>
-
-    <footer>
-      <p>&copy; 2026 そま</p>
-    </footer>
   </main>
+
+  <footer>
+    <p>&copy; 2026 そま</p>
+  </footer>
 </body>
 </html>
