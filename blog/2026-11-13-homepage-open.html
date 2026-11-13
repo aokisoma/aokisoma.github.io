@@ -64,31 +64,82 @@
 
     header.site-nav {
       position: sticky; top: 0; z-index: 10;
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(14px) saturate(1.5);
+      -webkit-backdrop-filter: blur(14px) saturate(1.5);
+      border-bottom: 1px solid transparent;
+      transition: transform 0.32s ease, box-shadow 0.25s ease,
+        background-color 0.25s ease, border-color 0.25s ease;
     }
     @media (prefers-color-scheme: dark) {
-      header.site-nav { background: rgba(7, 21, 40, 0.85); }
+      header.site-nav { background: rgba(7, 21, 40, 0.72); }
+    }
+    header.site-nav.scrolled {
+      background: rgba(255, 255, 255, 0.88);
+      border-bottom-color: var(--border);
+      box-shadow: 0 6px 24px rgba(11, 61, 145, 0.10);
+    }
+    @media (prefers-color-scheme: dark) {
+      header.site-nav.scrolled {
+        background: rgba(7, 21, 40, 0.88);
+        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+      }
+    }
+    header.site-nav.nav-hidden { transform: translateY(-100%); }
+    .scroll-progress {
+      position: fixed; top: 0; left: 0; z-index: 30;
+      width: 100%; height: 3px; pointer-events: none;
+      background: linear-gradient(90deg, var(--blue-800), var(--blue-600), var(--blue-400));
+      transform-origin: 0 50%; transform: scaleX(0);
     }
     .nav-inner {
       max-width: 62rem; margin: 0 auto; padding: 0 20px;
-      display: flex; flex-wrap: wrap; gap: 2px 6px; align-items: center;
+      display: flex; flex-wrap: nowrap; gap: 6px 14px; align-items: center;
     }
     .brand {
-      font-weight: 800; color: var(--blue-800);
-      margin-right: auto; padding: 8px 4px; font-size: 1rem;
+      display: inline-flex; align-items: center; gap: 9px;
+      font-weight: 800; color: var(--blue-800); text-decoration: none;
+      margin-right: auto; padding: 10px 2px; font-size: 1rem; white-space: nowrap;
     }
-    .brand a { color: inherit; text-decoration: none; }
+    .brand .mark {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 30px; height: 30px; border-radius: 50%; flex: none;
+      background: linear-gradient(135deg, var(--blue-800), var(--blue-600) 60%, var(--blue-400));
+      color: #ffffff; font-size: 0.85rem; font-weight: 800;
+      box-shadow: 0 3px 10px rgba(11, 61, 145, 0.35);
+    }
     @media (prefers-color-scheme: dark) { .brand { color: var(--blue-400); } }
-    .nav-inner nav { display: flex; flex-wrap: wrap; gap: 2px 4px; }
-    .nav-inner nav a {
-      display: inline-flex; align-items: center; min-height: 44px;
-      padding: 6px 10px; color: var(--ink); text-decoration: none; font-size: 0.95rem;
-      border-radius: 8px;
+    .nav-inner nav {
+      display: flex; flex-wrap: nowrap; gap: 2px;
+      overflow-x: auto; scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
     }
-    .nav-inner nav a:hover { color: var(--blue-600); background: var(--blue-50); }
+    @media (max-width: 48rem) {
+      .nav-inner nav {
+        mask-image: linear-gradient(90deg, #000 92%, transparent);
+        -webkit-mask-image: linear-gradient(90deg, #000 92%, transparent);
+      }
+    }
+    .nav-inner nav::-webkit-scrollbar { display: none; }
+    .nav-inner nav a {
+      position: relative; display: inline-flex; align-items: center; min-height: 44px;
+      padding: 6px 10px; color: var(--ink); text-decoration: none; font-size: 0.93rem;
+      white-space: nowrap; border-radius: 8px;
+    }
+    .nav-inner nav a::after {
+      content: ""; position: absolute; left: 10px; right: 10px; bottom: 7px;
+      height: 2px; border-radius: 2px;
+      background: linear-gradient(90deg, var(--blue-600), var(--blue-400));
+      transform: scaleX(0); transform-origin: 0 50%;
+      transition: transform 0.22s ease;
+    }
+    .nav-inner nav a:hover { color: var(--blue-600); }
+    .nav-inner nav a:hover::after,
+    .nav-inner nav a.active::after { transform: scaleX(1); }
+    .nav-inner nav a.active { color: var(--blue-600); font-weight: 700; }
+    @media (prefers-color-scheme: dark) {
+      .nav-inner nav a:hover, .nav-inner nav a.active { color: var(--blue-400); }
+    }
 
     .hero {
       background: linear-gradient(135deg, var(--blue-900) 0%, var(--blue-800) 42%, var(--blue-600) 78%, var(--blue-400) 125%);
@@ -120,10 +171,11 @@
 </head>
 <body>
   <a class="skip" href="#main">本文へ移動</a>
+  <div class="scroll-progress" aria-hidden="true"></div>
 
   <header class="site-nav">
     <div class="nav-inner">
-      <span class="brand"><a href="../">Portfolio</a></span>
+      <a class="brand" href="../"><span class="mark" aria-hidden="true">A</span>Portfolio</a>
       <nav aria-label="メニュー">
         <a href="../">ホーム</a>
         <a href="./">ブログ</a>
@@ -156,5 +208,49 @@
       <p>&copy; 2026 青木 壯磨 — Built with GitHub Pages</p>
     </div>
   </footer>
+  <script>
+    (function () {
+      var header = document.querySelector("header.site-nav");
+      var bar = document.querySelector(".scroll-progress");
+      if (!header) return;
+      var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      var lastY = window.scrollY;
+      var ticking = false;
+      function update() {
+        var y = window.scrollY;
+        header.classList.toggle("scrolled", y > 8);
+        var max = document.documentElement.scrollHeight - window.innerHeight;
+        if (bar) bar.style.transform = "scaleX(" + (max > 0 ? Math.min(y / max, 1) : 0) + ")";
+        if (!reduce) {
+          if (y > 240 && y - lastY > 4) header.classList.add("nav-hidden");
+          else if (lastY - y > 4 || y <= 240) header.classList.remove("nav-hidden");
+        }
+        lastY = y;
+        ticking = false;
+      }
+      window.addEventListener("scroll", function () {
+        if (!ticking) { ticking = true; window.requestAnimationFrame(update); }
+      }, { passive: true });
+      update();
+      var links = {};
+      document.querySelectorAll(".nav-inner nav a[href^='#']").forEach(function (a) {
+        links[a.getAttribute("href").slice(1)] = a;
+      });
+      var sections = Object.keys(links).map(function (id) {
+        return document.getElementById(id);
+      }).filter(Boolean);
+      if (sections.length && "IntersectionObserver" in window) {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) {
+            if (e.isIntersecting) {
+              Object.keys(links).forEach(function (k) { links[k].classList.remove("active"); });
+              if (links[e.target.id]) links[e.target.id].classList.add("active");
+            }
+          });
+        }, { rootMargin: "-40% 0px -55% 0px" });
+        sections.forEach(function (s) { io.observe(s); });
+      }
+    })();
+  </script>
 </body>
 </html>
