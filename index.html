@@ -279,6 +279,26 @@
     }
     @media (min-width: 42rem) { .artist-list { grid-template-columns: 1fr 1fr; } }
 
+    /* ---------- 受賞歴（タイムライン） ---------- */
+    .awards { list-style: none; margin: 0; padding: 0; }
+    .awards li { position: relative; padding: 0 0 24px 28px; }
+    .awards li:last-child { padding-bottom: 2px; }
+    .awards li::before {
+      content: ""; position: absolute; left: 0; top: 9px;
+      width: 13px; height: 13px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue-600), var(--blue-400));
+      box-shadow: 0 0 0 4px var(--blue-100);
+    }
+    .awards li::after {
+      content: ""; position: absolute; left: 6px; top: 30px; bottom: 0;
+      width: 2px; background: var(--border); border-radius: 1px;
+    }
+    .awards li:last-child::after { display: none; }
+    .award-head { font-weight: 700; font-size: 1.05rem; line-height: 1.6; }
+    .award-date { color: var(--blue-700); }
+    @media (prefers-color-scheme: dark) { .award-date { color: var(--blue-400); } }
+    .award-desc { color: var(--muted); margin-top: 3px; }
+
     /* ---------- 展開カード（もっと見る） ---------- */
     details.expandable { padding: 0; }
     details.expandable summary {
@@ -523,14 +543,14 @@
     <section id="awards">
       <div class="sec-head"><h2>受賞歴</h2><span class="en">Awards</span></div>
       <div class="card">
-        <ul class="rows">
+        <ul class="awards">
           <li>
-            <span class="date">2025年</span>
-            ロボコンやまなし2025 自律型ゴルフロボット競技（大学・一般の部） 準優勝・電子情報通信学会東京支部長賞（機体名「走れアテナ」）
+            <div class="award-head"><span class="award-date">2025年11月</span> ― 第33回ロボットコンテスト in Yamanashi 2025（ロボコンやまなし2025）</div>
+            <p class="award-desc">自律型ゴルフロボット競技（大学・一般の部）で、機体「走れアテナ」が準優勝／電子情報通信学会東京支部長賞を受賞。</p>
           </li>
           <li>
-            <span class="date">2026年3月</span>
-            工学部奨励賞（山梨大学工学部）
+            <div class="award-head"><span class="award-date">2026年3月</span> ― 令和7年度第3回 工学部・工学専攻奨励賞</div>
+            <p class="award-desc">2026年3月に山梨大学工学部より表彰を受けています。</p>
           </li>
         </ul>
       </div>
