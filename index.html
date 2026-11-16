@@ -262,6 +262,8 @@
       .interest-feature { grid-template-columns: 1.35fr 1fr; }
       .interest-feature img { aspect-ratio: auto; height: 100%; min-height: 260px; }
     }
+    .interest-wide { margin-bottom: 16px; }
+    .chips-note { margin-top: 14px; }
     .research-figure { margin: 18px 0 0; }
     .research-figure img {
       display: block; width: 100%; aspect-ratio: 16 / 9;
@@ -479,11 +481,20 @@
     <!-- ===== Interests：趣味・好きなものが入ります ===== -->
     <section id="interests">
       <div class="sec-head"><h2>趣味・関心</h2><span class="en">Interests</span></div>
-      <div class="grid cols-3 start">
-        <article class="card">
+      <article class="card interest-wide">
           <h3>音楽鑑賞</h3>
-          <p>よく聴くアーティストは、Mrs. GREEN APPLE、RADWIMPS、ずっと真夜中でいいのに。、BLUE ENCOUNT、indigo la End、Da-iCE、CHiCO with HoneyWorks、ILLIT、HANA などです。オーケストラや、夜に聴く洋楽も好みます。</p>
+          <span class="tag">よく聴くアーティスト</span>
+          <ul class="chips" aria-label="よく聴くアーティスト一覧">
+            <li>Mrs. GREEN APPLE</li>
+            <li>RADWIMPS</li>
+            <li>ずっと真夜中でいいのに。</li>
+            <li>BLUE ENCOUNT</li>
+            <li>indigo la End</li>
+            <li>back number</li>
+          </ul>
+          <p class="chips-note">オーケストラも好みます。</p>
         </article>
+      <div class="grid cols-2 start">
         <article class="card">
           <h3>バドミントン</h3>
           <p>バドミントンサークルに所属しています。仲間と集まって打つ時間を楽しんでいます。</p>
