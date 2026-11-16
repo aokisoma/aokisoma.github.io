@@ -264,6 +264,20 @@
     }
     .interest-wide { margin-bottom: 16px; }
     .chips-note { margin-top: 14px; }
+    .artist-list {
+      list-style: none; margin: 8px 0 0; padding: 0;
+      display: grid; grid-template-columns: 1fr; column-gap: 36px;
+    }
+    .artist-list li {
+      display: flex; align-items: baseline; gap: 10px;
+      padding: 10px 2px; border-bottom: 1px solid var(--border);
+    }
+    .artist-list li::before {
+      content: ""; flex: none; width: 8px; height: 8px; border-radius: 2px;
+      background: linear-gradient(135deg, var(--blue-600), var(--blue-400));
+      transform: translateY(-1px);
+    }
+    @media (min-width: 42rem) { .artist-list { grid-template-columns: 1fr 1fr; } }
     .research-figure { margin: 18px 0 0; }
     .research-figure img {
       display: block; width: 100%; aspect-ratio: 16 / 9;
@@ -484,7 +498,7 @@
       <article class="card interest-wide">
           <h3>音楽鑑賞</h3>
           <span class="tag">よく聴くアーティスト</span>
-          <ul class="chips" aria-label="よく聴くアーティスト一覧">
+          <ul class="artist-list" aria-label="よく聴くアーティスト一覧">
             <li>Mrs. GREEN APPLE</li>
             <li>RADWIMPS</li>
             <li>ずっと真夜中でいいのに。</li>
