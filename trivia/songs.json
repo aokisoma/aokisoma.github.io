@@ -1,0 +1,104 @@
+{
+  "songs": [
+    {
+      "title": "およげ!たいやきくん",
+      "artist": "子門真人",
+      "year": 1975
+    },
+    {
+      "title": "UFO",
+      "artist": "ピンク・レディー",
+      "year": 1977
+    },
+    {
+      "title": "YOUNG MAN (Y.M.C.A.)",
+      "artist": "西城秀樹",
+      "year": 1979
+    },
+    {
+      "title": "ルビーの指環",
+      "artist": "寺尾聰",
+      "year": 1981
+    },
+    {
+      "title": "Get Wild",
+      "artist": "TM NETWORK",
+      "year": 1987
+    },
+    {
+      "title": "Diamonds",
+      "artist": "プリンセス プリンセス",
+      "year": 1989
+    },
+    {
+      "title": "愛は勝つ",
+      "artist": "KAN",
+      "year": 1990
+    },
+    {
+      "title": "ラブ・ストーリーは突然に",
+      "artist": "小田和正",
+      "year": 1991
+    },
+    {
+      "title": "innocent world",
+      "artist": "Mr.Children",
+      "year": 1994
+    },
+    {
+      "title": "CAN YOU CELEBRATE?",
+      "artist": "安室奈美恵",
+      "year": 1997
+    },
+    {
+      "title": "TSUNAMI",
+      "artist": "サザンオールスターズ",
+      "year": 2000
+    },
+    {
+      "title": "世界に一つだけの花",
+      "artist": "SMAP",
+      "year": 2003
+    },
+    {
+      "title": "粉雪",
+      "artist": "レミオロメン",
+      "year": 2005
+    },
+    {
+      "title": "キセキ",
+      "artist": "GReeeeN",
+      "year": 2008
+    },
+    {
+      "title": "ヘビーローテーション",
+      "artist": "AKB48",
+      "year": 2010
+    },
+    {
+      "title": "恋",
+      "artist": "星野源",
+      "year": 2016
+    },
+    {
+      "title": "紅蓮華",
+      "artist": "LiSA",
+      "year": 2019
+    },
+    {
+      "title": "ドライフラワー",
+      "artist": "優里",
+      "year": 2020
+    },
+    {
+      "title": "新時代",
+      "artist": "Ado",
+      "year": 2022
+    },
+    {
+      "title": "アイドル",
+      "artist": "YOASOBI",
+      "year": 2023
+    }
+  ]
+}

@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>トリビアの夜</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: #0b1020; color: #f1f5f9;
+    font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif;
+    font-size: 20px; line-height: 1.5;
+  }
+  .wrap { max-width: 1440px; margin: 0 auto; padding: 16px 20px 60px; }
+  h1 { font-size: 44px; margin: 10px 0 4px; letter-spacing: .05em; }
+  h2 { font-size: 30px; margin: 18px 0 10px; }
+  h3 { font-size: 24px; margin: 14px 0 8px; }
+  p { margin: 8px 0; }
+  .sub { color: #94a3b8; font-size: 18px; }
+  a { color: #7dd3fc; }
+  .btn {
+    display: inline-block; padding: 14px 28px; margin: 6px 6px 6px 0;
+    font-size: 22px; font-weight: 700; color: #fff; background: #334155;
+    border: none; border-radius: 12px; cursor: pointer; min-height: 56px;
+  }
+  .btn:hover { filter: brightness(1.2); }
+  .btn:disabled { opacity: .35; cursor: not-allowed; filter: none; }
+  .btn.primary { background: #2563eb; }
+  .btn.good { background: #16a34a; }
+  .btn.bad { background: #dc2626; }
+  .btn.warn { background: #d97706; }
+  .btn.ghost { background: transparent; border: 2px solid #475569; }
+  .btn.big { font-size: 28px; padding: 20px 40px; }
+  input[type="text"], select, textarea {
+    font-size: 20px; padding: 10px 12px; border-radius: 8px;
+    border: 2px solid #475569; background: #0f172a; color: #f1f5f9;
+  }
+  textarea { width: 100%; min-height: 110px; font-size: 16px; }
+  label { font-size: 20px; }
+  .card {
+    background: #111a30; border: 2px solid #26334f; border-radius: 16px;
+    padding: 20px 24px; margin: 16px 0;
+  }
+  .teamedit { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin: 10px 0; }
+  .scorebar { display: flex; gap: 14px; margin: 14px 0; }
+  .teambox {
+    flex: 1; border-radius: 14px; padding: 12px 18px; background: #111a30;
+    border: 4px solid #334155; min-width: 260px;
+  }
+  .teambox .tname { font-size: 26px; font-weight: 800; }
+  .teambox .tscore { font-size: 44px; font-weight: 900; line-height: 1.1; }
+  .teambox .tmeta { font-size: 17px; color: #cbd5e1; }
+  .teambox.active { box-shadow: 0 0 0 4px #facc15, 0 0 24px rgba(250,204,21,.45); }
+  .turnbanner {
+    text-align: center; font-size: 30px; font-weight: 800; padding: 10px;
+    border-radius: 12px; background: #1e293b; margin: 10px 0;
+  }
+  .board { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 10px; }
+  .cathead {
+    text-align: center; font-weight: 800; padding: 12px 6px; background: #1e293b;
+    border-radius: 10px; font-size: clamp(15px, 1.9vw, 24px); line-height: 1.3;
+    display: flex; align-items: center; justify-content: center; min-height: 64px;
+  }
+  .cell {
+    position: relative; border: 3px solid #334155; background: #16213c; color: #f8fafc;
+    border-radius: 12px; font-size: 36px; font-weight: 900; cursor: pointer;
+    min-height: 74px; display: flex; align-items: center; justify-content: center;
+  }
+  .cell:hover:not(:disabled) { border-color: #facc15; }
+  .cell:disabled { cursor: default; }
+  .cell.gone { background: #0a0f1e; color: #475569; border-style: dashed; }
+  .cell .badge { position: absolute; top: 2px; right: 8px; font-size: 19px; font-weight: 700; }
+  .cell .badge2 { position: absolute; bottom: 2px; left: 8px; font-size: 17px; font-weight: 700; color: #fca5a5; }
+  .cell .owner-sym { position: absolute; bottom: 2px; right: 8px; font-size: 20px; }
+  .cell.targetable { border-color: #facc15; box-shadow: 0 0 14px rgba(250,204,21,.6); animation: pulse 1.2s infinite; }
+  @keyframes pulse { 0%,100% { filter: brightness(1); } 50% { filter: brightness(1.35); } }
+  .qhead { font-size: 24px; color: #7dd3fc; font-weight: 700; }
+  .qtext { font-size: clamp(28px, 3.6vw, 46px); font-weight: 800; line-height: 1.45; margin: 18px 0; white-space: pre-wrap; }
+  .timerwrap { margin: 14px 0; }
+  .timernum { font-size: 54px; font-weight: 900; text-align: center; line-height: 1; }
+  .timernum.low { color: #f87171; }
+  .timerbar { height: 18px; background: #1e293b; border-radius: 9px; overflow: hidden; margin-top: 8px; }
+  .timerfill { height: 100%; background: #38bdf8; width: 100%; }
+  .timerfill.low { background: #ef4444; }
+  .chip {
+    display: inline-block; padding: 8px 18px; margin: 4px; background: #1e3a5f;
+    border: 2px solid #38bdf8; border-radius: 999px; font-size: 26px; font-weight: 700;
+  }
+  .answerbox { background: #052e16; border: 2px solid #16a34a; border-radius: 14px; padding: 16px 20px; margin: 14px 0; }
+  .answerbox .ans { font-size: 38px; font-weight: 900; }
+  .acc { display: inline-block; background: #14532d; border-radius: 999px; padding: 4px 14px; margin: 3px; font-size: 20px; }
+  .expl { color: #cbd5e1; font-size: 19px; margin-top: 10px; white-space: pre-wrap; }
+  .banner {
+    text-align: center; font-size: 30px; font-weight: 900; padding: 14px;
+    border-radius: 12px; margin: 12px 0;
+  }
+  .banner.steal { background: #7c2d12; border: 3px solid #f97316; color: #ffedd5; }
+  .banner.music { background: #3b0764; border: 3px solid #a855f7; color: #f3e8ff; font-size: 44px; }
+  .banner.pause { background: #713f12; border: 3px solid #eab308; color: #fef9c3; }
+  .oppanel { border: 2px dashed #64748b; background: #0d1526; border-radius: 14px; padding: 14px 20px; margin: 22px 0; }
+  .oppanel summary { font-size: 20px; font-weight: 700; cursor: pointer; color: #fbbf24; }
+  details.rules { border: 2px solid #26334f; background: #111a30; border-radius: 14px; padding: 12px 20px; margin: 16px 0; }
+  details.rules summary { font-size: 22px; font-weight: 700; cursor: pointer; }
+  details.rules li { margin: 5px 0; font-size: 19px; }
+  .songlist { font-size: 17px; color: #cbd5e1; columns: 2; column-gap: 40px; }
+  .songlist .done { color: #64748b; text-decoration: line-through; }
+  .songlist .next { color: #fbbf24; font-weight: 800; }
+  .notice { background: #422006; border: 2px solid #d97706; color: #fde68a; border-radius: 10px; padding: 10px 16px; margin: 10px 0; font-size: 19px; }
+  .okmsg { background: #052e16; border: 2px solid #16a34a; color: #bbf7d0; border-radius: 10px; padding: 10px 16px; margin: 10px 0; font-size: 19px; }
+  .flex { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .center { text-align: center; }
+  .huge { font-size: 56px; font-weight: 900; }
+  .stars { color: #facc15; font-size: 26px; letter-spacing: 2px; }
+  .muted { color: #94a3b8; }
+  .topnav { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+  .radio { margin-right: 18px; font-size: 21px; }
+  .radio input { transform: scale(1.4); margin-right: 6px; }
+  select.cat { min-width: 300px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topnav">
+    <div class="sub"><a href="../index.html">← ホームへ</a></div>
+    <div class="sub">トリビアの夜（ホームページ版）</div>
+  </div>
+  <div id="app"><p>読み込み中…</p></div>
+</div>
+
+<script>
+"use strict";
+/* ================= ユーティリティ ================= */
+const $ = (sel) => document.querySelector(sel);
+function esc(s) {
+  return String(s == null ? "" : s)
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+}
+function shuffle(a) {
+  const r = a.slice();
+  for (let i = r.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [r[i], r[j]] = [r[j], r[i]];
+  }
+  return r;
+}
+function randPick(a) { return a[Math.floor(Math.random() * a.length)]; }
+
+/* ================= データ ================= */
+let DATA = { categories: [] };
+let SONGS = [];
+const CAT_BY_ID = {};
+function rebuildCatIndex() {
+  for (const k in CAT_BY_ID) delete CAT_BY_ID[k];
+  for (const c of DATA.categories) CAT_BY_ID[c.id] = c;
+}
+
+/* ================= 状態 ================= */
+const LS_KEY = "triviaNightHPv1";
+const PALETTE = ["#e63946", "#4361ee", "#2a9d8f", "#e9c46a", "#9b5de5", "#f15bb5", "#00bbf9", "#06d6a0"];
+function defaultState() {
+  return {
+    phase: "setup",           // setup | cats | board | question | stealTarget | music | paused | setEnd | nightEnd
+    hasActiveSet: false,
+    mode: "stars",            // single | stars
+    teams: [
+      { name: "チームA", color: "#e63946", symbol: "●" },
+      { name: "チームB", color: "#4361ee", symbol: "▲" }
+    ],
+    setNumber: 1,
+    stars: [0, 0],
+    totalPoints: [0, 0],
+    turn: 0,
+    picksLeft: [10, 10],
+    cats: [],                 // [{kind:'bank',id,name} | {kind:'custom',name}]
+    catSel: [null, null],     // カテゴリ決め画面の選択状態
+    lastCats: null,
+    cells: {},                // "ci-d" -> {owner,fails,gone,hidden,musicFired,stolen,knownSteal}
+    bonus: [0, 0],
+    stealUsed: [false, false],
+    used: {},                 // poolKey -> [questionId,...]
+    customPools: {},          // noun -> [question,...]
+    songIndex: 0,
+    current: null,            // {kind:'normal'|'steal', ci, d, q, targetKey, revealed, timedOut, passed}
+    pause: null,              // {kind:'open'|'steal', ci, d, targetKey}
+    setResult: null,
+    notice: ""
+  };
+}
+let state = defaultState();
+function save() {
+  try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch (e) { /* 容量超過などは無視 */ }
+}
+function load() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (raw) {
+      const s = JSON.parse(raw);
+      if (s && typeof s === "object" && s.teams) state = Object.assign(defaultState(), s);
+    }
+  } catch (e) { /* 壊れていたら初期状態 */ }
+}
+
+/* ================= 問題プール ================= */
+function poolKeyFor(cat) { return cat.kind === "bank" ? cat.id : "custom:" + cat.name; }
+function poolQuestions(cat, diff) {
+  let list = [];
+  if (cat.kind === "bank") {
+    const c = CAT_BY_ID[cat.id];
+    if (!c) return [];
+    list = c.questions.filter(q => q.difficulty === diff)
+      .map(q => Object.assign({}, q, { _id: cat.id + ":" + c.questions.indexOf(q) }));
+  } else {
+    list = (state.customPools[cat.name] || []).filter(q => q.difficulty === diff)
+      .map(q => Object.assign({}, q, { _id: "custom:" + cat.name + ":" + q.question }));
+  }
+  return list;
+}
+function unusedQuestions(cat, diff) {
+  const usedSet = new Set(state.used[poolKeyFor(cat)] || []);
+  return poolQuestions(cat, diff).filter(q => !usedSet.has(q._id));
+}
+function drawQuestion(cat, diff) {
+  const cand = unusedQuestions(cat, diff);
+  if (cand.length === 0) return null;
+  const q = randPick(cand);
+  const key = poolKeyFor(cat);
+  if (!state.used[key]) state.used[key] = [];
+  state.used[key].push(q._id);
+  return q;
+}
+function customReady(name) {
+  const cat = { kind: "custom", name: name };
+  for (let d = 1; d <= 10; d++) {
+    if (unusedQuestions(cat, d).length === 0) return false;
+  }
+  return true;
+}
+function customShortage(name) {
+  const cat = { kind: "custom", name: name };
+  const lack = [];
+  for (let d = 1; d <= 10; d++) {
+    if (unusedQuestions(cat, d).length === 0) lack.push(d);
+  }
+  return lack;
+}
+
+/* ================= 固有名詞問題の取り込み ================= */
+function normalizeCustomData(obj) {
+  if (!obj) return [];
+  if (Array.isArray(obj)) return obj;
+  if (Array.isArray(obj.categories)) return obj.categories;
+  if (Array.isArray(obj.questions)) return [obj];
+  return [];
+}
+function ingestCustom(obj) {
+  const cats = normalizeCustomData(obj);
+  let added = 0;
+  for (const c of cats) {
+    if (!c || !c.name || !Array.isArray(c.questions)) continue;
+    if (!state.customPools[c.name]) state.customPools[c.name] = [];
+    const pool = state.customPools[c.name];
+    const seen = new Set(pool.map(q => q.question));
+    for (const q of c.questions) {
+      if (!q || !q.question || !q.answer) continue;
+      const d = Number(q.difficulty);
+      if (!(d >= 1 && d <= 10)) continue;
+      if (seen.has(q.question)) continue;
+      seen.add(q.question);
+      pool.push({
+        difficulty: d,
+        question: String(q.question),
+        answer: String(q.answer),
+        acceptable: Array.isArray(q.acceptable) ? q.acceptable.map(String) : [],
+        explanation: q.explanation ? String(q.explanation) : "",
+        display: q.display ? String(q.display) : ""
+      });
+      added++;
+    }
+  }
+  save();
+  return added;
+}
+async function fetchCustom(showMsg) {
+  try {
+    const res = await fetch("custom-questions.json", { cache: "no-store" });
+    if (!res.ok) throw new Error("not found");
+    const obj = await res.json();
+    const n = ingestCustom(obj);
+    if (showMsg) state.notice = n > 0 ? ("custom-questions.json から問題を " + n + " 問取り込みました。") : "custom-questions.json を読み込みました（新しい問題はありませんでした）。";
+  } catch (e) {
+    if (showMsg) state.notice = "custom-questions.json が見つかりませんでした。貼り付けでも取り込めます。";
+  }
+  save();
+}
+</script>
+<script>
+"use strict";
+/* ================= 得点 ================= */
+function cellKey(ci, d) { return ci + "-" + d; }
+function setScore(t) {
+  let s = state.bonus[t] || 0;
+  for (const k in state.cells) {
+    if (state.cells[k].owner === t) s += Number(k.split("-")[1]);
+  }
+  return s;
+}
+function playableCells() {
+  const out = [];
+  for (const k in state.cells) {
+    const c = state.cells[k];
+    if (c.owner === null && !c.gone) out.push(k);
+  }
+  return out;
+}
+
+/* ================= セット構築 ================= */
+function buildBoard() {
+  state.cells = {};
+  for (let ci = 0; ci < 5; ci++) {
+    for (let d = 1; d <= 10; d++) {
+      state.cells[cellKey(ci, d)] = {
+        owner: null, fails: 0, gone: false,
+        hidden: null, musicFired: false, stolen: false, knownSteal: false
+      };
+    }
+  }
+  const keys = shuffle(Object.keys(state.cells));
+  state.cells[keys[0]].hidden = "steal";
+  state.cells[keys[1]].hidden = "steal";
+  state.cells[keys[2]].hidden = "music";
+  state.cells[keys[3]].hidden = "music";
+  state.cells[keys[4]].hidden = "music";
+  state.bonus = [0, 0];
+  state.stealUsed = [false, false];
+  state.picksLeft = [10, 10];
+  state.turn = (state.setNumber - 1) % 2;
+  state.current = null;
+  state.pause = null;
+  state.setResult = null;
+  state.hasActiveSet = true;
+  state.lastCats = JSON.parse(JSON.stringify(state.cats));
+  state.phase = "board";
+  state.notice = "";
+  save();
+}
+function startSetFromSelection() {
+  const picks = state.catSel;
+  const cats = [];
+  const usedBank = new Set();
+  for (const p of picks) {
+    if (!p) return;
+    if (p.kind === "bank") { cats.push({ kind: "bank", id: p.id, name: CAT_BY_ID[p.id].name }); usedBank.add(p.id); }
+    else cats.push({ kind: "custom", name: p.name });
+  }
+  const rest = shuffle(DATA.categories.filter(c => !usedBank.has(c.id)).map(c => c.id));
+  for (let i = 0; i < 3; i++) cats.push({ kind: "bank", id: rest[i], name: CAT_BY_ID[rest[i]].name });
+  state.cats = shuffle(cats);
+  buildBoard();
+}
+
+/* ================= 手番の進行 ================= */
+function finishPick() {
+  stopTimer();
+  state.current = null;
+  state.picksLeft[state.turn] = Math.max(0, state.picksLeft[state.turn] - 1);
+  if (state.picksLeft[0] <= 0 && state.picksLeft[1] <= 0) return endSet();
+  if (playableCells().length === 0) return endSet();
+  state.turn = 1 - state.turn;
+  if (state.picksLeft[state.turn] <= 0) state.turn = 1 - state.turn;
+  // 手番側に選べるマスが無い場合は、その手番を消費して交代（最大2回まで）
+  for (let i = 0; i < 2; i++) {
+    if (playableCells().length === 0) return endSet();
+    if (state.picksLeft[state.turn] > 0) break;
+    state.picksLeft[state.turn] = 0;
+    state.turn = 1 - state.turn;
+  }
+  if (state.picksLeft[0] <= 0 && state.picksLeft[1] <= 0) return endSet();
+  state.phase = "board";
+  save();
+  render();
+}
+function endSet() {
+  stopTimer();
+  const scores = [setScore(0), setScore(1)];
+  let winner = null;
+  if (scores[0] > scores[1]) winner = 0;
+  else if (scores[1] > scores[0]) winner = 1;
+  if (state.mode === "stars" && winner !== null) state.stars[winner] += 1;
+  state.totalPoints[0] += scores[0];
+  state.totalPoints[1] += scores[1];
+  state.setResult = { scores: scores, winner: winner, setNumber: state.setNumber };
+  state.hasActiveSet = false;
+  state.phase = "setEnd";
+  save();
+  render();
+}
+function nextSet() {
+  state.setNumber += 1;
+  state.current = null;
+  state.pause = null;
+  state.phase = "cats";
+  save();
+  render();
+}
+function newNight() {
+  const keepTeams = state.teams, keepMode = state.mode, keepPools = state.customPools;
+  const keepSel = state.catSel;
+  state = defaultState();
+  state.teams = keepTeams; state.mode = keepMode; state.customPools = keepPools; state.catSel = keepSel;
+  save();
+  render();
+}
+
+/* ================= マスを開く ================= */
+function openCell(ci, d) {
+  const cat = state.cats[ci];
+  const cell = state.cells[cellKey(ci, d)];
+  if (!cell || cell.owner !== null || cell.gone) return;
+  const q = drawQuestion(cat, d);
+  if (!q) {
+    if (cat.kind === "custom") {
+      state.pause = { kind: "open", ci: ci, d: d };
+      state.phase = "paused";
+    } else {
+      state.notice = "このカテゴリ・難易度の問題が尽きました。別のマスを選んでください。";
+    }
+    save();
+    render();
+    return;
+  }
+  state.current = {
+    kind: "normal", ci: ci, d: d, q: q, targetKey: null,
+    revealed: false, timedOut: false, passed: false
+  };
+  state.phase = "question";
+  state.notice = "";
+  save();
+  render();
+  startTimer();
+}
+
+/* ================= 判定 ================= */
+function resolveCorrect() {
+  const cur = state.current;
+  if (!cur) return;
+  stopTimer();
+  const t = state.turn;
+  if (cur.kind === "steal") {
+    const target = state.cells[cur.targetKey];
+    target.owner = t;
+    target.stolen = true;
+    state.stealUsed[t] = true;
+    state.current = null;
+    finishPick();
+    return;
+  }
+  const cell = state.cells[cellKey(cur.ci, cur.d)];
+  cell.owner = t;
+  if (cell.hidden === "steal") {
+    const opp = 1 - t;
+    const targets = Object.keys(state.cells).filter(k => {
+      const c = state.cells[k];
+      return c.owner === opp && !c.stolen;
+    });
+    state.current = null;
+    if (!state.stealUsed[t] && targets.length > 0) {
+      state.phase = "stealTarget";
+      save();
+      render();
+      return;
+    }
+    finishPick();
+    return;
+  }
+  if (cell.hidden === "music" && !cell.musicFired) {
+    cell.musicFired = true;
+    state.current = null;
+    startMusic();
+    return;
+  }
+  state.current = null;
+  finishPick();
+}
+function resolveWrong() {
+  const cur = state.current;
+  if (!cur) return;
+  stopTimer();
+  if (cur.kind === "steal") {
+    state.stealUsed[state.turn] = true;
+    state.current = null;
+    finishPick();
+    return;
+  }
+  const cell = state.cells[cellKey(cur.ci, cur.d)];
+  cell.fails += 1;
+  if (cell.fails >= 2) cell.gone = true;
+  if (cell.hidden === "steal") cell.knownSteal = true;
+  const wasMusic = cell.hidden === "music" && !cell.musicFired;
+  if (wasMusic) cell.musicFired = true;
+  state.current = null;
+  if (wasMusic) { startMusic(); return; }
+  finishPick();
+}
+
+/* ================= スティール挑戦 ================= */
+function stealTargetPick(key) {
+  const parts = key.split("-");
+  const ci = Number(parts[0]), d = Number(parts[1]);
+  const cat = state.cats[ci];
+  const q = drawQuestion(cat, d);
+  if (!q) {
+    if (cat.kind === "custom") {
+      state.pause = { kind: "steal", ci: ci, d: d, targetKey: key };
+      state.phase = "paused";
+    } else {
+      state.notice = "挑戦用の問題が尽きました。この挑戦は流れます。";
+      finishPick();
+      return;
+    }
+    save();
+    render();
+    return;
+  }
+  state.current = {
+    kind: "steal", ci: ci, d: d, q: q, targetKey: key,
+    revealed: false, timedOut: false, passed: false
+  };
+  state.phase = "question";
+  save();
+  render();
+  startTimer();
+}
+
+/* ================= 音楽ボーナス ================= */
+function startMusic() {
+  state.phase = "music";
+  save();
+  render();
+}
+function musicResolve(teamOrNull) {
+  if (teamOrNull !== null && teamOrNull !== undefined) state.bonus[teamOrNull] += 3;
+  if (state.songIndex < SONGS.length) state.songIndex += 1;
+  finishPick();
+}
+
+/* ================= 一時停止の再開 ================= */
+function resumePause() {
+  const p = state.pause;
+  if (!p) return;
+  const cat = state.cats[p.ci];
+  if (unusedQuestions(cat, p.d).length === 0) {
+    state.notice = "まだ難易度 " + p.d + " の問題が足りません。";
+    save();
+    render();
+    return;
+  }
+  state.pause = null;
+  state.notice = "";
+  if (p.kind === "open") {
+    state.phase = "board";
+    openCell(p.ci, p.d);
+  } else if (p.kind === "steal") {
+    state.phase = "stealTarget";
+    stealTargetPick(p.targetKey);
+  }
+}
+function giveUpPause() {
+  state.pause = null;
+  finishPick();
+}
+
+/* ================= タイマー ================= */
+let timerInt = null;
+let timeLeft = 30;
+function startTimer() {
+  stopTimer();
+  timeLeft = 30;
+  updateTimerDOM();
+  timerInt = setInterval(() => {
+    timeLeft = Math.max(0, timeLeft - 0.1);
+    updateTimerDOM();
+    if (timeLeft <= 0) {
+      stopTimer();
+      if (state.phase === "question" && state.current && !state.current.revealed) {
+        state.current.revealed = true;
+        state.current.timedOut = true;
+        save();
+        render();
+      }
+    }
+  }, 100);
+}
+function stopTimer() {
+  if (timerInt) { clearInterval(timerInt); timerInt = null; }
+}
+function updateTimerDOM() {
+  const num = $("#timernum"), fill = $("#timerfill");
+  if (num) {
+    num.textContent = Math.ceil(timeLeft);
+    num.className = "timernum" + (timeLeft <= 10 ? " low" : "");
+  }
+  if (fill) {
+    fill.style.width = (timeLeft / 30 * 100) + "%";
+    fill.className = "timerfill" + (timeLeft <= 10 ? " low" : "");
+  }
+}
+</script>
+<script>
+"use strict";
+/* ================= 共通パーツ ================= */
+function scorebarHTML() {
+  const inSet = ["board", "question", "stealTarget", "music", "paused"].includes(state.phase);
+  let h = '<div class="scorebar">';
+  for (let t = 0; t < 2; t++) {
+    const team = state.teams[t];
+    const active = inSet && state.turn === t;
+    h += '<div class="teambox' + (active ? " active" : "") + '" style="border-color:' + esc(team.color) + '">';
+    h += '<div class="tname"><span style="color:' + esc(team.color) + '">' + esc(team.symbol) + "</span> " + esc(team.name) + "</div>";
+    h += '<div class="tscore">' + setScore(t) + " 点</div>";
+    let meta = "";
+    if (state.mode === "stars") meta += "星 " + "★".repeat(state.stars[t]) + (state.stars[t] === 0 ? "（なし）" : "") + "　";
+    if (inSet) meta += "残り手番 " + state.picksLeft[t];
+    h += '<div class="tmeta">' + esc(meta) + "</div>";
+    h += "</div>";
+  }
+  h += "</div>";
+  return h;
+}
+function boardGridHTML(interactive, revealHidden) {
+  let h = '<div class="board">';
+  for (let ci = 0; ci < 5; ci++) {
+    h += '<div class="cathead">' + esc(state.cats[ci].name) + "</div>";
+  }
+  for (let d = 1; d <= 10; d++) {
+    for (let ci = 0; ci < 5; ci++) {
+      const key = cellKey(ci, d);
+      const c = state.cells[key];
+      let cls = "cell", style = "", content = String(d), disabled = " disabled";
+      if (c.gone) { cls += " gone"; content = "―"; }
+      if (c.owner !== null) {
+        style = ' style="background:' + esc(state.teams[c.owner].color) + '"';
+      }
+      let badges = "";
+      if (c.owner !== null) badges += '<span class="owner-sym">' + esc(state.teams[c.owner].symbol) + "</span>";
+      if (c.knownSteal || (revealHidden && c.hidden === "steal")) badges += '<span class="badge">⚡</span>';
+      else if (revealHidden && c.hidden === "music") badges += '<span class="badge">♪</span>';
+      if (c.musicFired) badges += '<span class="badge2">♪済</span>';
+      else if (c.fails === 1 && c.owner === null && !c.gone) badges += '<span class="badge2">✕1</span>';
+      let onclick = "";
+      if (interactive === "open" && c.owner === null && !c.gone) {
+        disabled = "";
+        onclick = ' onclick="openCell(' + ci + "," + d + ')"';
+      }
+      if (interactive === "steal" && c.owner === 1 - state.turn && !c.stolen) {
+        cls += " targetable";
+        disabled = "";
+        onclick = ' onclick="stealTargetPick(\'' + key + '\')"';
+      }
+      h += '<button class="' + cls + '"' + style + disabled + onclick + ">" + content + badges + "</button>";
+    }
+  }
+  h += "</div>";
+  return h;
+}
+function rulesHTML() {
+  return '<details class="rules"><summary>ルールの要約</summary><ul>' +
+    "<li>2チーム対抗。盤面は5カテゴリ×難易度1〜10。交互に1マスずつ選び、1セット各チーム10回（合計20問）。</li>" +
+    "<li>カテゴリは、各チームが選ぶ特別カテゴリ1つずつ＋ランダム3つ。セットごとに決め直せます。</li>" +
+    "<li>回答はチームで相談して口頭で。制限時間は30秒、時間切れは不正解。パスを宣言したらその場で不正解。</li>" +
+    "<li>正解するとマスが自チームの陣地になり、難易度の数字がそのまま点数になります。不正解は0点。</li>" +
+    "<li>不正解のマスは残り、別の問題で再挑戦できます。同じマスで合計2回失敗すると消滅します。</li>" +
+    "<li>隠しマス：スティール2個（開けた瞬間に判明。正解すると相手のマス1つに同じカテゴリ・難易度の問題で挑戦し、奪えます。1チーム1セット1回まで。奪われたマスは奪い返せません）。</li>" +
+    "<li>隠しマス：音楽3個（回答が終わってから判明。両チーム早押しの曲当てボーナス、正解で+3点。曲はスマホで再生し、曲名は操作者パネル内でのみ見られます）。</li>" +
+    "<li>見つからなかった隠しマスは、セット終了時に場所が明かされます。</li>" +
+    "<li>モード：セット完結（1セットごとに完結）／勝ち星（セット勝利で星1つ。星が同数なら全セット合計点で勝敗）。</li>" +
+    "<li>一度出た問題は、その夜は二度と出ません。「新しい夜」でリセットできます。</li>" +
+    "<li>固有名詞カテゴリ：特別枠で固有名詞を入力すると、その固有名詞の問題で遊べます。問題が難易度1〜10そろうまで開始できません。途中で問題が尽きたら一時停止し、問題が追加され次第再開します。</li>" +
+    "</ul></details>";
+}
+function operatorPanelHTML() {
+  let h = '<details class="oppanel"><summary>操作者パネル（曲リスト・固有名詞の問題の追加）</summary>';
+  h += "<h3>音楽ボーナス 曲リスト（操作者だけが見てください）</h3>";
+  if (SONGS.length === 0) h += "<p class='muted'>曲リストが読み込めませんでした。</p>";
+  else {
+    h += '<div class="songlist">';
+    SONGS.forEach((s, i) => {
+      const cls = i < state.songIndex ? "done" : (i === state.songIndex ? "next" : "");
+      h += '<div class="' + cls + '">' + (i + 1) + ". " + esc(s.title) + "／" + esc(s.artist) + "（" + esc(s.year) + "）</div>";
+    });
+    h += "</div>";
+    h += '<p class="muted">次の曲は ' + Math.min(state.songIndex + 1, SONGS.length) + " 曲目です。曲はスマホで再生してください。</p>";
+  }
+  h += "<h3>固有名詞カテゴリの問題を追加</h3>";
+  h += '<p class="muted">形式：questions.json のカテゴリ1つ分（{"name":"固有名詞","questions":[{"difficulty":1,"question":"…","answer":"…","acceptable":["…"],"explanation":"…"}, …]}）を貼り付けてください。custom-questions.json が同じフォルダにあれば自動でも読み込まれます。</p>';
+  h += '<textarea id="pastebox" placeholder=\'{"name":"…","questions":[…]}\'></textarea>';
+  h += '<div class="flex"><button class="btn" onclick="ingestPaste()">貼り付けて取り込む</button>' +
+       '<button class="btn" onclick="fetchCustomBtn()">custom-questions.json を再読み込み</button></div>';
+  const nouns = Object.keys(state.customPools);
+  if (nouns.length > 0) {
+    h += "<h3>取り込み済みの固有名詞</h3>";
+    for (const n of nouns) {
+      const cat = { kind: "custom", name: n };
+      const counts = [];
+      for (let d = 1; d <= 10; d++) counts.push(d + ":" + unusedQuestions(cat, d).length);
+      h += "<p>" + esc(n) + "（未使用の残り／難易度） " + counts.join("　") + (customReady(n) ? "　…準備OK" : "　…まだそろっていません") + "</p>";
+    }
+  }
+  h += '<h3>データ</h3><div class="flex"><button class="btn bad" onclick="clearAll()">進行データをすべて消去</button></div>';
+  h += "</details>";
+  return h;
+}
+
+/* ================= スタート画面 ================= */
+function renderSetup() {
+  let h = "<h1>トリビアの夜</h1>";
+  h += '<p class="sub">テレビに映して遊ぶ、2チーム対抗の陣取りクイズです。</p>';
+  if (state.returnPhase) {
+    h += '<div class="card"><p>ゲームが進行中です。</p><button class="btn primary big" onclick="goReturn()">ゲームに戻る</button></div>';
+  }
+  h += '<div class="card"><h2>モード</h2>';
+  h += '<label class="radio"><input type="radio" name="mode" value="stars"' + (state.mode === "stars" ? " checked" : "") + ">勝ち星モード（セット勝利で星を集める）</label>";
+  h += '<label class="radio"><input type="radio" name="mode" value="single"' + (state.mode === "single" ? " checked" : "") + ">セット完結モード（1セットごとに完結）</label>";
+  h += "<h2>チーム</h2>";
+  for (let t = 0; t < 2; t++) {
+    const team = state.teams[t];
+    h += '<div class="teamedit"><span style="font-size:28px;color:' + esc(team.color) + '">' + esc(team.symbol) + "</span>";
+    h += '<input type="text" id="tname' + t + '" value="' + esc(team.name) + '" size="16">';
+    h += '<select id="tcolor' + t + '">';
+    for (const c of PALETTE) {
+      h += '<option value="' + c + '"' + (team.color === c ? " selected" : "") + ' style="background:' + c + '">色 ' + c + "</option>";
+    }
+    h += "</select></div>";
+  }
+  h += '<div class="flex"><button class="btn primary big" onclick="applySetup()">カテゴリ決めへ進む</button>';
+  h += '<button class="btn warn" onclick="confirmNewNight()">新しい夜をはじめる</button></div>';
+  h += '<p class="muted">「新しい夜」では、星・合計点・使用済み問題・曲の消費がリセットされます（チーム名と取り込み済みの固有名詞問題は残ります）。</p>';
+  h += "</div>";
+  h += rulesHTML();
+  h += operatorPanelHTML();
+  return h;
+}
+function applySetup() {
+  const m = document.querySelector('input[name="mode"]:checked');
+  if (m) state.mode = m.value;
+  for (let t = 0; t < 2; t++) {
+    const nm = $("#tname" + t), col = $("#tcolor" + t);
+    if (nm && nm.value.trim()) state.teams[t].name = nm.value.trim();
+    if (col) state.teams[t].color = col.value;
+  }
+  state.returnPhase = null;
+  state.phase = "cats";
+  state.notice = "";
+  save();
+  render();
+}
+function confirmNewNight() {
+  if (confirm("新しい夜をはじめますか？星・合計点・使用済み問題がリセットされます。")) {
+    stopTimer();
+    newNight();
+  }
+}
+function goSetup() {
+  if (["board", "question", "stealTarget", "music", "paused", "cats"].includes(state.phase)) {
+    state.returnPhase = state.phase;
+  }
+  stopTimer();
+  state.phase = "setup";
+  save();
+  render();
+}
+function goReturn() {
+  const back = state.returnPhase || "board";
+  state.returnPhase = null;
+  state.phase = back;
+  save();
+  render();
+  if (back === "question" && state.current && !state.current.revealed) startTimer();
+}
+
+/* ================= カテゴリ決め画面 ================= */
+function ensureCatSel() {
+  if (!Array.isArray(state.catSel)) state.catSel = [null, null];
+  if (!state.catSel[0] && DATA.categories[0]) state.catSel[0] = { kind: "bank", id: DATA.categories[0].id };
+  if (!state.catSel[1] && DATA.categories[1]) state.catSel[1] = { kind: "bank", id: DATA.categories[1].id };
+}
+function renderCats() {
+  ensureCatSel();
+  let h = "<h1>カテゴリ決め</h1>";
+  h += '<p class="sub">セット ' + state.setNumber + "：各チームが特別カテゴリを1つ選び、残り3つはランダムで決まります。先手は " + esc(state.teams[(state.setNumber - 1) % 2].name) + " です。</p>";
+  h += scorebarHTML();
+  for (let t = 0; t < 2; t++) {
+    const team = state.teams[t];
+    const sel = state.catSel[t];
+    h += '<div class="card"><h3><span style="color:' + esc(team.color) + '">' + esc(team.symbol) + "</span> " + esc(team.name) + " の特別カテゴリ</h3>";
+    h += '<select class="cat" id="catsel' + t + '" onchange="catSelChange()">';
+    for (const c of DATA.categories) {
+      const v = "bank:" + c.id;
+      const selected = sel && sel.kind === "bank" && sel.id === c.id ? " selected" : "";
+      h += '<option value="' + esc(v) + '"' + selected + ">" + esc(c.name) + "</option>";
+    }
+    h += '<option value="custom"' + (sel && sel.kind === "custom" ? " selected" : "") + ">固有名詞カテゴリ（自分で決める）</option>";
+    h += "</select>";
+    if (sel && sel.kind === "custom") {
+      h += '<div style="margin-top:12px"><input type="text" id="noun' + t + '" value="' + esc(sel.name || "") + '" size="24" placeholder="固有名詞（作品・人物・場所など）" onchange="catSelChange()"> ';
+      if (sel.name) {
+        if (customReady(sel.name)) h += '<span style="color:#4ade80;font-weight:700">問題の準備OK</span>';
+        else h += '<span style="color:#fbbf24;font-weight:700">問題がまだそろっていません（不足：難易度 ' + customShortage(sel.name).join("・") + "）</span>";
+      }
+      h += '<p class="muted">固有名詞の問題は、出題者が用意して custom-questions.json に置くか、下の操作者パネルから貼り付けると取り込まれます。難易度1〜10がそろうまで開始できません。</p></div>';
+    }
+    h += "</div>";
+  }
+  h += '<div class="flex">';
+  h += '<button class="btn primary big" onclick="startSetBtn()">セット開始</button>';
+  if (state.lastCats) h += '<button class="btn" onclick="sameAsLastBtn()">前回と同じカテゴリで開始</button>';
+  h += '<button class="btn ghost" onclick="goSetup()">スタート画面へ</button>';
+  h += "</div>";
+  h += operatorPanelHTML();
+  return h;
+}
+function applyCatSel() {
+  ensureCatSel();
+  for (let t = 0; t < 2; t++) {
+    const sel = $("#catsel" + t);
+    if (!sel) continue;
+    if (sel.value === "custom") {
+      const noun = $("#noun" + t);
+      state.catSel[t] = { kind: "custom", name: noun ? noun.value.trim() : "" };
+    } else {
+      state.catSel[t] = { kind: "bank", id: sel.value.replace("bank:", "") };
+    }
+  }
+}
+function catSelChange() {
+  applyCatSel();
+  save();
+  render();
+}
+function validatePicks(picks) {
+  const a = picks[0], b = picks[1];
+  if (a.kind === "bank" && b.kind === "bank" && a.id === b.id) return "2チームで同じカテゴリは選べません。";
+  if (a.kind === "custom" && b.kind === "custom" && a.name && a.name === b.name) return "2チームで同じ固有名詞は選べません。";
+  for (const p of picks) {
+    if (p.kind === "custom") {
+      if (!p.name) return "固有名詞を入力してください。";
+      if (!customReady(p.name)) return "「" + p.name + "」の問題がまだそろっていません（不足：難易度 " + customShortage(p.name).join("・") + "）。";
+    }
+  }
+  return "";
+}
+function startSetBtn() {
+  applyCatSel();
+  const err = validatePicks(state.catSel);
+  if (err) { state.notice = err; save(); render(); return; }
+  state.notice = "";
+  startSetFromSelection();
+  render();
+}
+function sameAsLastBtn() {
+  if (!state.lastCats) return;
+  const picks = state.lastCats.filter(c => {
+    // lastCats は5カテゴリ全部入り。特別枠の判定は先頭2つとは限らないため、固有名詞と「前回の特別枠」は区別できない。
+    // ここでは lastCats をそのまま再利用する（検証は固有名詞のみ行う）。
+    return c.kind === "custom";
+  });
+  for (const p of picks) {
+    if (!customReady(p.name)) {
+      state.notice = "「" + p.name + "」の問題が足りません（不足：難易度 " + customShortage(p.name).join("・") + "）。新しい問題を取り込んでください。";
+      save(); render(); return;
+    }
+  }
+  state.cats = JSON.parse(JSON.stringify(state.lastCats));
+  state.notice = "";
+  buildBoard();
+  render();
+}
+</script>
+<script>
+"use strict";
+/* ================= 盤面画面 ================= */
+function renderBoard() {
+  const t = state.turn;
+  const team = state.teams[t];
+  let h = "<h2>セット " + state.setNumber + "</h2>";
+  h += scorebarHTML();
+  h += '<div class="turnbanner"><span style="color:' + esc(team.color) + '">' + esc(team.symbol) + "</span> " + esc(team.name) + " の番です。マスを選んでください。</div>";
+  h += boardGridHTML("open", false);
+  h += '<div class="flex" style="margin-top:14px"><button class="btn ghost" onclick="goSetup()">スタート画面へ</button></div>';
+  h += operatorPanelHTML();
+  return h;
+}
+function renderStealTarget() {
+  const t = state.turn;
+  const team = state.teams[t];
+  let h = "<h2>セット " + state.setNumber + "</h2>";
+  h += scorebarHTML();
+  h += '<div class="banner steal">⚡ スティール成功！ ' + esc(team.name) + " は、奪いたい相手のマスを1つ選んでください（光っているマスが対象です）。正解するとそのマスを奪えます。</div>";
+  h += boardGridHTML("steal", false);
+  h += '<div class="flex" style="margin-top:14px"><button class="btn warn" onclick="skipSteal()">挑戦せずに終わる</button></div>';
+  return h;
+}
+function skipSteal() {
+  state.stealUsed[state.turn] = true;
+  finishPick();
+}
+
+/* ================= 問題画面 ================= */
+function renderQuestion() {
+  const cur = state.current;
+  if (!cur) return "<p>問題がありません。</p>";
+  const cat = state.cats[cur.ci];
+  const team = state.teams[state.turn];
+  const cell = state.cells[cellKey(cur.ci, cur.d)];
+  let h = "";
+  h += scorebarHTML();
+  if (cur.kind === "steal") {
+    h += '<div class="banner steal">⚡ スティール挑戦中！正解するとこのマスを奪えます</div>';
+  } else if (cell && cell.hidden === "steal") {
+    h += '<div class="banner steal">⚡ スティールマス！正解すると、相手のマスに挑戦できます</div>';
+  }
+  h += '<div class="qhead">' + esc(cat.name) + "　難易度 " + cur.d + "（" + cur.d + ' 点）　回答：<span style="color:' + esc(team.color) + '">' + esc(team.symbol) + " " + esc(team.name) + "</span></div>";
+  if (!cur.revealed) {
+    h += '<div class="timerwrap"><div class="timernum" id="timernum">30</div><div class="timerbar"><div class="timerfill" id="timerfill"></div></div></div>';
+  }
+  if (cur.q.display) {
+    const items = String(cur.q.display).split(/[、,・\n]+/).map(s => s.trim()).filter(Boolean);
+    if (items.length > 0) {
+      h += '<div style="margin:10px 0">' + items.map(x => '<span class="chip">' + esc(x) + "</span>").join("") + "</div>";
+    }
+  }
+  h += '<div class="qtext">' + esc(cur.q.question) + "</div>";
+  if (!cur.revealed) {
+    h += '<div class="flex"><button class="btn primary big" onclick="revealAnswer()">答えを表示</button>' +
+         '<button class="btn warn big" onclick="doPass()">パス（不正解）</button></div>';
+  } else {
+    if (cur.timedOut) h += '<div class="banner steal">⏰ 時間切れ！不正解です</div>';
+    if (cur.passed) h += '<div class="banner steal">パスが宣言されました（不正解）</div>';
+    h += '<div class="answerbox"><div class="sub">答え</div><div class="ans">' + esc(cur.q.answer) + "</div>";
+    if (cur.q.acceptable && cur.q.acceptable.length > 0) {
+      h += '<div style="margin-top:8px">許容できる答え：' + cur.q.acceptable.map(a => '<span class="acc">' + esc(a) + "</span>").join("") + "</div>";
+    }
+    if (cur.q.explanation) h += '<div class="expl">' + esc(cur.q.explanation) + "</div>";
+    h += "</div>";
+    h += '<div class="flex">';
+    if (!cur.timedOut && !cur.passed) h += '<button class="btn good big" onclick="resolveCorrect()">正解</button>';
+    h += '<button class="btn bad big" onclick="resolveWrong()">不正解として進む</button>';
+    h += "</div>";
+  }
+  return h;
+}
+function revealAnswer() {
+  if (!state.current) return;
+  stopTimer();
+  state.current.revealed = true;
+  save();
+  render();
+}
+function doPass() {
+  if (!state.current) return;
+  stopTimer();
+  state.current.revealed = true;
+  state.current.passed = true;
+  save();
+  render();
+}
+
+/* ================= 音楽ボーナス画面 ================= */
+function renderMusic() {
+  let h = "";
+  h += scorebarHTML();
+  h += '<div class="banner music">♪ BONUS ♪</div>';
+  if (state.songIndex < SONGS.length) {
+    h += '<div class="center huge">' + (state.songIndex + 1) + " 曲目</div>";
+    h += '<p class="center">音楽マスでした！両チーム早押しで曲名を当ててください。正解で <b>+3点</b>。曲はスマホで再生してください（曲名は下の操作者欄でのみ見られます）。</p>';
+    const s = SONGS[state.songIndex];
+    h += '<div class="oppanel"><div style="font-weight:700;color:#fbbf24">操作者だけ見てください</div>' +
+         '<p style="font-size:26px">♪ ' + esc(s.title) + "／" + esc(s.artist) + "（" + esc(s.year) + "）</p>" +
+         '<div class="flex">' +
+         '<button class="btn good" onclick="musicResolve(0)">' + esc(state.teams[0].symbol) + " " + esc(state.teams[0].name) + " 正解 +3</button>" +
+         '<button class="btn good" onclick="musicResolve(1)">' + esc(state.teams[1].symbol) + " " + esc(state.teams[1].name) + " 正解 +3</button>" +
+         '<button class="btn" onclick="musicResolve(null)">正解なし</button>' +
+         "</div></div>";
+  } else {
+    h += '<p class="center">曲リストは終わりました。</p>';
+    h += '<div class="center"><button class="btn primary big" onclick="musicResolve(null)">進む</button></div>';
+  }
+  return h;
+}
+
+/* ================= 一時停止画面 ================= */
+function renderPaused() {
+  const p = state.pause;
+  const cat = p ? state.cats[p.ci] : null;
+  let h = "";
+  h += scorebarHTML();
+  h += '<div class="banner pause">⏸ 問題を作成中です</div>';
+  if (p && cat) {
+    h += '<p class="center" style="font-size:24px">カテゴリ「' + esc(cat.name) + "」難易度 " + p.d + " の" +
+         (p.kind === "steal" ? "スティール挑戦用" : "") +
+         "問題が手元にありません。<br>出題者が問題を用意するまで、盤面・スコア・手番はそのまま保持されています。</p>";
+  }
+  h += '<div class="flex center" style="justify-content:center">' +
+       '<button class="btn primary big" onclick="resumePause()">問題が入ったら再開</button>' +
+       '<button class="btn warn" onclick="giveUpPause()">この手番をあきらめる</button></div>';
+  h += operatorPanelHTML();
+  return h;
+}
+
+/* ================= セット終了・夜の結果 ================= */
+function renderSetEnd() {
+  const r = state.setResult;
+  let h = "<h1>セット " + (r ? r.setNumber : state.setNumber) + " 結果</h1>";
+  if (r) {
+    h += '<div class="scorebar">';
+    for (let t = 0; t < 2; t++) {
+      const team = state.teams[t];
+      h += '<div class="teambox" style="border-color:' + esc(team.color) + '"><div class="tname">' +
+           esc(team.symbol) + " " + esc(team.name) + '</div><div class="tscore">' + r.scores[t] + " 点</div>";
+      if (state.mode === "stars") h += '<div class="stars">' + "★".repeat(state.stars[t]) + "</div>";
+      h += "</div>";
+    }
+    h += "</div>";
+    if (r.winner !== null) {
+      const w = state.teams[r.winner];
+      h += '<div class="banner" style="background:#052e16;border:3px solid #16a34a">🏆 このセットは ' + esc(w.name) + " の勝ち！" + (state.mode === "stars" ? "（星 +1）" : "") + "</div>";
+    } else {
+      h += '<div class="banner" style="background:#1e293b;border:3px solid #64748b">引き分けです' + (state.mode === "stars" ? "（星は付きません）" : "") + "</div>";
+    }
+  }
+  h += '<h3>隠しマスの場所（公開）</h3>';
+  h += boardGridHTML(null, true);
+  h += '<div class="flex" style="margin-top:16px"><button class="btn primary big" onclick="nextSet()">次のセットへ</button>' +
+       '<button class="btn" onclick="goNightEnd()">夜を終える</button></div>';
+  return h;
+}
+function goNightEnd() {
+  state.phase = "nightEnd";
+  save();
+  render();
+}
+function renderNightEnd() {
+  let h = "<h1>今夜の結果</h1>";
+  h += '<div class="scorebar">';
+  for (let t = 0; t < 2; t++) {
+    const team = state.teams[t];
+    h += '<div class="teambox" style="border-color:' + esc(team.color) + '"><div class="tname">' +
+         esc(team.symbol) + " " + esc(team.name) + '</div>' +
+         (state.mode === "stars" ? '<div class="stars">' + "★".repeat(state.stars[t]) + " 星 " + state.stars[t] + "</div>" : "") +
+         '<div class="tscore">' + state.totalPoints[t] + ' 点</div><div class="tmeta">全セット合計点</div></div>';
+  }
+  h += "</div>";
+  let winner = null, reason = "";
+  if (state.mode === "stars" && state.stars[0] !== state.stars[1]) {
+    winner = state.stars[0] > state.stars[1] ? 0 : 1;
+    reason = "星の数で決定";
+  } else if (state.totalPoints[0] !== state.totalPoints[1]) {
+    winner = state.totalPoints[0] > state.totalPoints[1] ? 0 : 1;
+    reason = state.mode === "stars" ? "星が同数のため、全セット合計点で決定" : "全セット合計点で決定";
+  }
+  if (winner !== null) {
+    const w = state.teams[winner];
+    h += '<div class="banner" style="background:#052e16;border:3px solid #16a34a">🏆 今夜の勝者は ' + esc(w.name) + "！（" + reason + "）</div>";
+  } else {
+    h += '<div class="banner" style="background:#1e293b;border:3px solid #64748b">今夜は引き分けです</div>';
+  }
+  h += '<div class="flex"><button class="btn primary big" onclick="confirmNewNight()">新しい夜をはじめる</button>' +
+       '<button class="btn ghost" onclick="goSetup()">スタート画面へ</button></div>';
+  h += rulesHTML();
+  return h;
+}
+
+/* ================= 操作者アクション ================= */
+function ingestPaste() {
+  const ta = $("#pastebox");
+  if (!ta || !ta.value.trim()) { state.notice = "貼り付け欄が空です。"; save(); render(); return; }
+  let obj;
+  try { obj = JSON.parse(ta.value); }
+  catch (e) { state.notice = "JSONとして読み取れませんでした。形式を確認してください。"; save(); render(); return; }
+  const n = ingestCustom(obj);
+  state.notice = n > 0 ? ("問題を " + n + " 問取り込みました。") : "新しい問題は取り込まれませんでした（重複か形式違いの可能性があります）。";
+  save();
+  if (state.phase === "paused") { resumePause(); return; }
+  render();
+}
+async function fetchCustomBtn() {
+  await fetchCustom(true);
+  if (state.phase === "paused") { resumePause(); return; }
+  render();
+}
+function clearAll() {
+  if (confirm("進行データをすべて消去して、最初からにしますか？")) {
+    try { localStorage.removeItem(LS_KEY); } catch (e) {}
+    location.reload();
+  }
+}
+
+/* ================= 描画統括 ================= */
+function render() {
+  const app = $("#app");
+  if (!app) return;
+  let h = "";
+  if (state.phase !== "setup") {
+    h += '<div class="flex" style="justify-content:flex-end"><button class="btn ghost" onclick="goSetup()">スタート画面へ</button></div>';
+  }
+  if (state.notice) h += '<div class="notice">' + esc(state.notice) + "</div>";
+  switch (state.phase) {
+    case "setup": h += renderSetup(); break;
+    case "cats": h += renderCats(); break;
+    case "board": h += renderBoard(); break;
+    case "stealTarget": h += renderStealTarget(); break;
+    case "question": h += renderQuestion(); break;
+    case "music": h += renderMusic(); break;
+    case "paused": h += renderPaused(); break;
+    case "setEnd": h += renderSetEnd(); break;
+    case "nightEnd": h += renderNightEnd(); break;
+    default: h += renderSetup(); break;
+  }
+  app.innerHTML = h;
+}
+
+/* ================= 初期化 ================= */
+async function init() {
+  load();
+  try {
+    const r = await fetch("questions.json");
+    if (!r.ok) throw new Error("bad");
+    DATA = await r.json();
+  } catch (e) {
+    $("#app").innerHTML = "<h1>トリビアの夜</h1><p>questions.json の読み込みに失敗しました。ファイルが同じフォルダにあるか確認してください。</p>";
+    return;
+  }
+  rebuildCatIndex();
+  try {
+    const r = await fetch("songs.json");
+    if (r.ok) { const s = await r.json(); SONGS = Array.isArray(s.songs) ? s.songs : []; }
+  } catch (e) { SONGS = []; }
+  await fetchCustom(false);
+  if (state.phase === "question" && state.current && state.current.revealed) {
+    // 再読み込み時に答え表示済みなら、そのまま表示
+  }
+  render();
+  if (state.phase === "question" && state.current && !state.current.revealed) startTimer();
+}
+init();
+</script>
+</body>
+</html>
